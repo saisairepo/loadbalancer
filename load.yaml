@@ -17,7 +17,7 @@ spec:
       - name: error-secret
       containers:
       - name: error-container
-        image: ghcr.io/saisairepo/loadbalancer:1.1
+        image: ghcr.io/saisairepo/loadbalancer:1.0
         ports:
         - containerPort: 9002
         command: ["/bin/sh", "-c", "sleep 3600"]  # Keeps the container alive for debugging
