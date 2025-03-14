@@ -20,6 +20,13 @@ spec:
         image: ghcr.io/saisairepo/loadbalancer:1.1
         ports:
         - containerPort: 9002
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2"
+          limits:
+            memory: "4Gi"
+            cpu: "2"
 
 ---
 apiVersion: v1
