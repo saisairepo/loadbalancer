@@ -1,33 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp-deployment
+  name: error-500
+  namespace: app-net
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
-      app: webapp
+      app: errortest
   template:
     metadata:
       labels:
-        app: webapp
+        app: errortest
     spec:
       containers:
-      - name: webapp-container
-        image: webapp-image:latest
+      - name: error-container
+        image: ghcr.io/saisairepo/loadbalancer:1.1
         ports:
-        - containerPort: 8080
+        - containerPort: 9002
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: webapp-service
+  name: errorsvc
+  namespace: app-net
 spec:
   type: LoadBalancer
   selector:
-    app: webapp
+    app: errortest
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8080
+    targetPort: 9002
