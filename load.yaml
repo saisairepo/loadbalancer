@@ -2,31 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: error-500
+  name: error-testing
   namespace: app-net
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: errortest
+      app: testcom
   template:
     metadata:
       labels:
-        app: errortest
+        app: testcom
     spec:
       containers:
-      - name: error-container
-        image: ghcr.io/saisairepo/loadbalancer:1.1
+      - name: test-container
+        image: ghcr.io/saisairepo/loadbalancer:1.0
         ports:
-        - containerPort: 9002
-        command: ["/bin/sh", "-c", "sleep 3600"]  # Keeps the container alive for debugging
+        - containerPort: 9003
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "4Gi"
+            cpu: "2"
           limits:
-            memory: "1Gi"
-            cpu: "1"
+            memory: "4Gi"
+            cpu: "2"
       imagePullSecrets:
       - name: error-secret
 #------------------------------------------------------------------SERVICE---------------------------------------------------------------------------------------------
@@ -34,13 +33,40 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: errorsvc
+  name: error-comsvc
   namespace: app-net
 spec:
   selector:
-    app: errortest
+    app: testcom
   ports:
   - name: http
     port: 80
-    targetPort: 9002
-  type: LoadBalancer
+    targetPort: 9003
+  type: ClusterIP
+#-------------------------------------------------------------------INGRESS--------------------------------------------------------------------------------------------
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: errortest-ingress-com
+  namespace: app-net
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - oscar.mlhuillier.com
+      secretName: com-tls
+  rules:
+    - host: oscar.mlhuillier.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: error-comsvc
+                port:
+                  number: 80
