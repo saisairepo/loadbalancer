@@ -1,3 +1,4 @@
+#---------------------------------------------------------------DEPLOYMENT---------------------------------------------------------------------------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,8 +14,6 @@ spec:
       labels:
         app: errortest
     spec:
-      imagePullSecrets:
-      - name: error-secret
       containers:
       - name: error-container
         image: ghcr.io/saisairepo/loadbalancer:1.0
@@ -28,7 +27,9 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "1"
-
+      imagePullSecrets:
+      - name: error-secret
+#------------------------------------------------------------------SERVICE---------------------------------------------------------------------------------------------
 ---
 apiVersion: v1
 kind: Service
@@ -36,10 +37,10 @@ metadata:
   name: errorsvc
   namespace: app-net
 spec:
-  type: LoadBalancer
   selector:
     app: errortest
   ports:
-  - protocol: TCP
+  - name: http
     port: 80
     targetPort: 9002
+  type: LoadBalancer
