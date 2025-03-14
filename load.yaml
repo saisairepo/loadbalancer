@@ -20,13 +20,14 @@ spec:
         image: ghcr.io/saisairepo/loadbalancer:1.1
         ports:
         - containerPort: 9002
+        command: ["/bin/sh", "-c", "sleep 3600"]  # Keeps the container alive for debugging
         resources:
           requests:
-            memory: "4Gi"
-            cpu: "2"
+            memory: "512Mi"
+            cpu: "500m"
           limits:
-            memory: "4Gi"
-            cpu: "2"
+            memory: "1Gi"
+            cpu: "1"
 
 ---
 apiVersion: v1
