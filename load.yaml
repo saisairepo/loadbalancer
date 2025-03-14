@@ -59,10 +59,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - oscar.mlhuillier.com
+        - test.mlhuillier.com
       secretName: com-tls
   rules:
-    - host: oscar.mlhuillier.com
+    - host: test.mlhuillier.com
       http:
         paths:
           - path: /
