@@ -14,28 +14,9 @@ spec:
       labels:
         app: testcom
     spec:
-      imagePullSecrets:  # <-- FIX: Move this outside 'containers:'
+      imagePullSecrets:
         - name: error-secret
       containers:
-<<<<<<< HEAD
-<<<<<<< HEAD
-      - name: error-container
-=======
-      - name: test-container
->>>>>>> 27435315e1ef18f54bd9b51de310f5de04ef67fa
-        image: ghcr.io/saisairepo/loadbalancer:1.0
-        ports:
-        - containerPort: 9003
-        resources:
-          requests:
-            memory: "4Gi"
-            cpu: "2"
-          limits:
-            memory: "4Gi"
-            cpu: "2"
-      imagePullSecrets:
-      - name: error-secret
-=======
         - name: test-container
           image: ghcr.io/saisairepo/loadbalancer:1.0
           ports:
@@ -48,7 +29,6 @@ spec:
               memory: "4Gi"
               cpu: "2"
 
->>>>>>> 3a2d1d9c5d832a37ecb2d11540abd5ef6aca3397
 #------------------------------------------------------------------SERVICE---------------------------------------------------------------------------------------------
 ---
 apiVersion: v1
