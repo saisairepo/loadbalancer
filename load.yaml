@@ -13,6 +13,8 @@ spec:
       labels:
         app: errortest
     spec:
+      imagePullSecrets:
+      - name: error-secret
       containers:
       - name: error-container
         image: ghcr.io/saisairepo/loadbalancer:1.1
