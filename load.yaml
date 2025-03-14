@@ -18,7 +18,7 @@ spec:
         - name: error-secret
       containers:
         - name: test-container
-          image: ghcr.io/saisairepo/loadbalancer:1.0
+          image: ghcr.io/saisairepo/loadbalancer:1.1
           ports:
             - containerPort: 9003
           resources:
