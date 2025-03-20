@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: error-testing
+  name: load-testing
   namespace: app-net
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: testcom
+      app: testload
   template:
     metadata:
       labels:
-        app: testcom
+        app: testload
     spec:
       imagePullSecrets:
         - name: error-secret
       containers:
-        - name: test-container
+        - name: load-container
           image: ghcr.io/saisairepo/loadbalancer:1.1
           ports:
-            - containerPort: 9003
+            - containerPort: 3000
           resources:
             requests:
               memory: "4Gi"
@@ -34,15 +34,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: error-comsvc
+  name: laod-comsvc
   namespace: app-net
 spec:
   selector:
-    app: testcom
+    app: testload
   ports:
     - name: http
       port: 80
-      targetPort: 9003
+      targetPort: 3000
   type: ClusterIP
 
 #-------------------------------------------------------------------INGRESS--------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: errortest-ingress-com
+  name: loadtest-ingress-com
   namespace: app-net
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
@@ -59,16 +59,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - test.mlhuillier.com
+        - load.mlhuillier.com
       secretName: com-tls
   rules:
-    - host: test.mlhuillier.com
+    - host: load.mlhuillier.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: error-comsvc
+                name: load-comsvc
                 port:
                   number: 80
