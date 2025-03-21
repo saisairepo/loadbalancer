@@ -2,55 +2,53 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: load-testing
+  name: error-load
   namespace: app-net
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: testload
+      app: loadtest
   template:
     metadata:
       labels:
-        app: testload
+        app: loadtest
     spec:
-      imagePullSecrets:
-        - name: error-secret
       containers:
-        - name: load-container
-          image: ghcr.io/saisairepo/loadbalancer:1.1
-          ports:
-            - containerPort: 3000
-          resources:
-            requests:
-              memory: "4Gi"
-              cpu: "2"
-            limits:
-              memory: "4Gi"
-              cpu: "2"
-
+      - name: load-container
+        image: ghcr.io/saisairepo/loadbalancer:1.0
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2"
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+      imagePullSecrets:
+      - name: error-secret
 #------------------------------------------------------------------SERVICE---------------------------------------------------------------------------------------------
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: laod-comsvc
+  name: loadsvc-com
   namespace: app-net
 spec:
   selector:
-    app: testload
+    app: loadtest
   ports:
-    - name: http
-      port: 80
-      targetPort: 3000
+  - name: http
+    port: 80
+    targetPort: 3000
   type: ClusterIP
-
 #-------------------------------------------------------------------INGRESS--------------------------------------------------------------------------------------------
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: loadtest-ingress-com
+  name: error-ingress-com
   namespace: app-net
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
@@ -59,16 +57,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - load.mlhuillier.com
+        - oscar.mlhuillier.com
       secretName: com-tls
   rules:
-    - host: load.mlhuillier.com
+    - host: oscar.mlhuillier.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: load-comsvc
+                name: loadsvc-com
                 port:
                   number: 80
